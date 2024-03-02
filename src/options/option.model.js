@@ -13,12 +13,12 @@ Option.findAllVersioniPortate = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM portate_versione_anagrafica");
+    const [rows,fields] = await conn.query("SELECT * FROM portate_versione_anagrafica");
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -26,12 +26,12 @@ Option.findAllTipoPortate = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM portate_tipo_anagrafica");
+    const [rows,fields] = await conn.query("SELECT * FROM portate_tipo_anagrafica");
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -68,7 +68,7 @@ Option.findAllTipoPortate = async function (result) {
 //       result(reason, null);
 //     })
 //     .finally(() => {
-//       if (conn) return conn.end();
+//       if (conn) return conn.release();
 //     });
 // };
 
@@ -78,7 +78,7 @@ Option.findAllTipoPortate = async function (result) {
 //   let conn;
 //   try {
 //     conn = await pool.getConnection();
-//     const rows = await conn.query(
+//     const [rows,fields] = await conn.query(
 //       "SELECT * FROM materie_prime_anagrafica WHERE id = ? ",
 //       id
 //     );
@@ -86,7 +86,7 @@ Option.findAllTipoPortate = async function (result) {
 //   } catch (err) {
 //     throw err;
 //   } finally {
-//     if (conn) return conn.end();
+//     if (conn) return conn.release();
 //   }
 // };
 
@@ -112,7 +112,7 @@ Option.findAllTipoPortate = async function (result) {
 //       result(reason, null);
 //     })
 //     .finally(() => {
-//       if (conn) return conn.end();
+//       if (conn) return conn.release();
 //     });
 // };
 
@@ -129,7 +129,7 @@ Option.findAllTipoPortate = async function (result) {
 //       result(null, err);
 //     })
 //     .finally(() => {
-//       if (conn) return conn.end();
+//       if (conn) return conn.release();
 //     });
 // };
 

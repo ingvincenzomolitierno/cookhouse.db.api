@@ -31,13 +31,13 @@ Plessi.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);
     console.log(rows);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -45,12 +45,12 @@ Plessi.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE plessi_anagrafica.plesso_pk = " + id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE plessi_anagrafica.plesso_pk = " + id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -58,12 +58,12 @@ Plessi.findByOrdineId = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE ordinescuola_anagrafica.ordinescuola_pk = " + id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE ordinescuola_anagrafica.ordinescuola_pk = " + id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -97,7 +97,7 @@ Plessi.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -123,7 +123,7 @@ Plessi.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -139,7 +139,7 @@ Plessi.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

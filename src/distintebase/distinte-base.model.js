@@ -15,7 +15,7 @@ DistintaBase.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(
+    const [rows,fields] = await conn.query(
       "SELECT distinte_base.*, portate_anagrafica.portata_code, portate_anagrafica.denominazione as portata_denominazione, " +
 			"materie_prime_anagrafica.materia_prima_code, materie_prime_anagrafica.denominazione as materia_prima_denominazione, materie_prime_anagrafica.udm_consumo " +
 "FROM distinte_base " +
@@ -28,7 +28,7 @@ DistintaBase.findAll = async function (result) {
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -72,7 +72,7 @@ DistintaBase.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -82,7 +82,7 @@ DistintaBase.create = async function (newItem, result) {
 //   let conn;
 //   try {
 //     conn = await pool.getConnection();
-//     const rows = await conn.query(
+//     const [rows,fields] = await conn.query(
 //       "SELECT * FROM materie_prime_anagrafica WHERE id = ? ",
 //       id
 //     );
@@ -90,7 +90,7 @@ DistintaBase.create = async function (newItem, result) {
 //   } catch (err) {
 //     throw err;
 //   } finally {
-//     if (conn) return conn.end();
+//     if (conn) return conn.release();
 //   }
 // };
 
@@ -117,7 +117,7 @@ DistintaBase.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -134,7 +134,7 @@ DistintaBase.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

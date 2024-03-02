@@ -24,7 +24,7 @@ Clienti.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);    
     result(null, rows);
   } catch (err) {
     throw err;
@@ -37,7 +37,7 @@ Clienti.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE clienti_anagrafica.scuola_pk = " + id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE clienti_anagrafica.scuola_pk = " + id);
     result(null, rows);
   } catch (err) {
     throw err;

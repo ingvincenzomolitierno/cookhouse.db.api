@@ -53,13 +53,13 @@ Forniture.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);
     console.log(rows);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -67,12 +67,12 @@ Forniture.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE forniture_cross.fornitura_pk = ?", id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE forniture_cross.fornitura_pk = ?", id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -80,12 +80,12 @@ Forniture.findByMenuId = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE menu_anagrafica.menu_pk = ?", id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE menu_anagrafica.menu_pk = ?", id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -119,7 +119,7 @@ Forniture.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -145,7 +145,7 @@ Forniture.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -161,7 +161,7 @@ Forniture.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

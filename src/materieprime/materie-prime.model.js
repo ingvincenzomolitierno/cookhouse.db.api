@@ -20,12 +20,12 @@ MateriePrime.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM materie_prime_anagrafica");
+    const [rows,fields] = await conn.query("SELECT * FROM materie_prime_anagrafica");
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -85,7 +85,7 @@ MateriePrime.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -95,7 +95,7 @@ MateriePrime.create = async function (newItem, result) {
 //   let conn;
 //   try {
 //     conn = await pool.getConnection();
-//     const rows = await conn.query(
+//     const [rows,fields] = await conn.query(
 //       "SELECT * FROM materie_prime_anagrafica WHERE id = ? ",
 //       id
 //     );
@@ -103,7 +103,7 @@ MateriePrime.create = async function (newItem, result) {
 //   } catch (err) {
 //     throw err;
 //   } finally {
-//     if (conn) return conn.end();
+//     if (conn) return conn.release();
 //   }
 // };
 
@@ -135,7 +135,7 @@ MateriePrime.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -152,7 +152,7 @@ MateriePrime.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

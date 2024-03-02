@@ -42,12 +42,12 @@ MenuStruttura.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -88,7 +88,7 @@ MenuStruttura.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -96,12 +96,12 @@ MenuStruttura.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE menu_anagrafica.menu_pk = ? ", id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE menu_anagrafica.menu_pk = ? ", id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -130,7 +130,7 @@ MenuStruttura.findById = async function (id, result) {
 //       result(reason, null);
 //     })
 //     .finally(() => {
-//       if (conn) return conn.end();
+//       if (conn) return conn.release();
 //     });
 // };
 
@@ -147,7 +147,7 @@ MenuStruttura.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

@@ -12,12 +12,12 @@ async function asyncFunction() {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * from materie_prime_anagrafica");
+    const [rows,fields] = await conn.query("SELECT * from materie_prime_anagrafica");
     console.log(rows); //[ {val: 1}, meta: ... ]
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 }
 

@@ -5,6 +5,9 @@ const Clienti = require("./clienti.model.js");
 exports.findAll = function (req, res) {
   Clienti.findAll(function (err, clienti) {
     if (err) res.send(err);
+
+    console.log(clienti);
+
     res.send(clienti);
   });
 };

@@ -35,13 +35,13 @@ Turni.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);
     console.log(rows);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -49,12 +49,12 @@ Turni.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE turni_anagrafica.turno_pk = " + id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE turni_anagrafica.turno_pk = " + id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -62,12 +62,12 @@ Turni.findByPlessoId = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE plessi_anagrafica.plesso_pk = " + id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE plessi_anagrafica.plesso_pk = " + id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -102,7 +102,7 @@ Turni.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -128,7 +128,7 @@ Turni.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -144,7 +144,7 @@ Turni.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

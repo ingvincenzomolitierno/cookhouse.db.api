@@ -24,12 +24,12 @@ Scuole.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -37,12 +37,12 @@ Scuole.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE scuole_anagrafica.scuola_pk = " + id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE scuole_anagrafica.scuola_pk = " + id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -50,12 +50,12 @@ Scuole.findByClienteId = async function (cliente_pk, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE clienti_anagrafica.cliente_pk = " + cliente_pk);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE clienti_anagrafica.cliente_pk = " + cliente_pk);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -90,7 +90,7 @@ Scuole.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -120,7 +120,7 @@ Scuole.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -137,7 +137,7 @@ Scuole.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

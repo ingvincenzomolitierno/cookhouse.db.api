@@ -24,12 +24,12 @@ Portate.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll);
+    const [rows,fields] = await conn.query(sqlFindAll);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -37,12 +37,12 @@ Portate.findById = async function (id, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE portate_anagrafica.portata_pk = ? ", id);
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE portate_anagrafica.portata_pk = ? ", id);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -51,12 +51,12 @@ Portate.findByTypeCode = async function (typecode, result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query(sqlFindAll + " WHERE portate_tipo_anagrafica.portata_tipo_code = '" + typecode + "'");
+    const [rows,fields] = await conn.query(sqlFindAll + " WHERE portate_tipo_anagrafica.portata_tipo_code = '" + typecode + "'");
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -105,7 +105,7 @@ Portate.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -115,7 +115,7 @@ Portate.create = async function (newItem, result) {
 //   let conn;
 //   try {
 //     conn = await pool.getConnection();
-//     const rows = await conn.query(
+//     const [rows,fields] = await conn.query(
 //       "SELECT * FROM materie_prime_anagrafica WHERE id = ? ",
 //       id
 //     );
@@ -123,7 +123,7 @@ Portate.create = async function (newItem, result) {
 //   } catch (err) {
 //     throw err;
 //   } finally {
-//     if (conn) return conn.end();
+//     if (conn) return conn.release();
 //   }
 // };
 
@@ -152,7 +152,7 @@ Portate.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -169,7 +169,7 @@ Portate.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 

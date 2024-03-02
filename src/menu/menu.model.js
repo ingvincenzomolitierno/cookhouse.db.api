@@ -23,14 +23,14 @@ Menu.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT menu_anagrafica.* FROM menu_anagrafica ");
+    const [rows,fields] = await conn.query("SELECT menu_anagrafica.* FROM menu_anagrafica ");
 
     console.log('rows',rows);
     result(null, rows);
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -98,7 +98,7 @@ Menu.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -108,7 +108,7 @@ Menu.create = async function (newItem, result) {
 //   let conn;
 //   try {
 //     conn = await pool.getConnection();
-//     const rows = await conn.query(
+//     const [rows,fields] = await conn.query(
 //       "SELECT * FROM materie_prime_anagrafica WHERE id = ? ",
 //       id
 //     );
@@ -116,7 +116,7 @@ Menu.create = async function (newItem, result) {
 //   } catch (err) {
 //     throw err;
 //   } finally {
-//     if (conn) return conn.end();
+//     if (conn) return conn.release();
 //   }
 // };
 
@@ -145,7 +145,7 @@ Menu.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -162,7 +162,7 @@ Menu.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
