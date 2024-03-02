@@ -29,7 +29,7 @@ Clienti.findAll = async function (result) {
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -42,7 +42,7 @@ Clienti.findById = async function (id, result) {
   } catch (err) {
     throw err;
   } finally {
-    if (conn) return conn.end();
+    if (conn) return conn.release();
   }
 };
 
@@ -83,7 +83,7 @@ Clienti.create = async function (newItem, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -111,7 +111,7 @@ Clienti.update = async function (id, item, result) {
       result(reason, null);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
@@ -127,7 +127,7 @@ Clienti.delete = async function (id, result) {
       result(null, err);
     })
     .finally(() => {
-      if (conn) return conn.end();
+      if (conn) return conn.release();
     });
 };
 
