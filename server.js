@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
 
 // Require materie prime routes
 const materiePrimeRoutes = require('./src/materieprime/materie-prime.routes');
+const tipoPortateRoutes = require('./src/tipoportate/tipoportate.routes');
+const versionePortateRoutes = require('./src/versioneportate/versioneportate.routes');
 const portateRoutes = require('./src/portate/portate.routes');
 const bomRoutes = require('./src/distintebase/distinte-base.routes');
 const optionsRoutes = require('./src/options/options.routes');
@@ -38,6 +40,8 @@ const turniRoutes = require('./src/turni/turni.routes');
 app.use('/api/v1/materieprime', materiePrimeRoutes);
 app.use('/api/v1/distintebase', bomRoutes);
 app.use('/api/v1/opzioni', optionsRoutes);
+app.use('/api/v1/tipoportate', tipoPortateRoutes);
+app.use('/api/v1/versioneportate', versionePortateRoutes);
 app.use('/api/v1/portate', portateRoutes);
 app.use('/api/v1/menu', menuRoutes);
 app.use('/api/v1/menustruttura', menuStrutturaRoutes);
