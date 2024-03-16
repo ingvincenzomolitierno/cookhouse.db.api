@@ -6,19 +6,19 @@ var Turni = function (turni) {
   this.turno_pk = turni.turno_pk;
   this.denominazione = turni.denominazione;
   this.codice = turni.codice;
-  this.plesso_fk = turni.plesso_fk;
+  this.ordinescuola_fk = turni.ordinescuola_fk;
 };
 
 let sqlFindAll = "SELECT " +
 "turni_anagrafica.turno_pk, " +
 "turni_anagrafica.denominazione AS turno_denominazione, " +
 "turni_anagrafica.codice AS turno_codice, " +
-"plessi_anagrafica.plesso_pk,  " +
-"plessi_anagrafica.denominazione AS plesso_denominazione, " +
-"plessi_anagrafica.codice AS plesso_codice, " +
 "ordinescuola_anagrafica.ordinescuola_pk, " +
 "ordinescuola_anagrafica.denominazione AS ordinescuola_denominazione, " +
 "ordinescuola_anagrafica.codice AS ordinescuola_codice, " +
+"plessi_anagrafica.plesso_pk, " +
+"plessi_anagrafica.denominazione AS plesso_denominazione, " +
+"plessi_anagrafica.codice AS plesso_codice, " +
 "scuole_anagrafica.scuola_pk, " +
 "scuole_anagrafica.denominazione AS scuola_denominazione, " +
 "scuole_anagrafica.codice AS scuola_codice, " +
@@ -26,9 +26,9 @@ let sqlFindAll = "SELECT " +
 "clienti_anagrafica.denominazione AS cliente_denominazione, " +
 "clienti_anagrafica.codice AS cliente_codice " +
 "FROM turni_anagrafica " +
-"LEFT JOIN  plessi_anagrafica ON turni_anagrafica.plesso_fk = plessi_anagrafica.plesso_pk " +
-"LEFT JOIN ordinescuola_anagrafica ON plessi_anagrafica.ordinescuola_fk = ordinescuola_anagrafica.ordinescuola_pk " +
-"LEFT JOIN scuole_anagrafica ON ordinescuola_anagrafica.scuola_fk = scuole_anagrafica.scuola_pk " +
+"LEFT JOIN  ordinescuola_anagrafica ON turni_anagrafica.ordinescuola_fk = ordinescuola_anagrafica.ordinescuola_pk " +
+"LEFT JOIN plessi_anagrafica ON ordinescuola_anagrafica.plesso_fk = plessi_anagrafica.plesso_pk " +
+"LEFT JOIN scuole_anagrafica ON plessi_anagrafica.scuola_fk = scuole_anagrafica.scuola_pk " +
 "LEFT JOIN clienti_anagrafica ON scuole_anagrafica.cliente_fk = clienti_anagrafica.cliente_pk ";
 
 Turni.findAll = async function (result) {
@@ -36,7 +36,6 @@ Turni.findAll = async function (result) {
   try {
     conn = await pool.getConnection();
     const [rows,fields] = await conn.query(sqlFindAll);
-    console.log(rows);
     result(null, rows);
   } catch (err) {
     throw err;
@@ -58,34 +57,33 @@ Turni.findById = async function (id, result) {
   }
 };
 
-Turni.findByPlessoId = async function (id, result) {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const [rows,fields] = await conn.query(sqlFindAll + " WHERE plessi_anagrafica.plesso_pk = " + id);
-    result(null, rows);
-  } catch (err) {
-    throw err;
-  } finally {
-    if (conn) return conn.release();
-  }
-};
+// Turni.findByPlessoId = async function (id, result) {
+//   let conn;
+//   try {
+//     conn = await pool.getConnection();
+//     const [rows,fields] = await conn.query(sqlFindAll + " WHERE plessi_anagrafica.plesso_pk = " + id);
+//     result(null, rows);
+//   } catch (err) {
+//     throw err;
+//   } finally {
+//     if (conn) return conn.release();
+//   }
+// };
 
 Turni.create = async function (newItem, result) {
-  console.log(newItem);
   let conn;
   conn = await pool.getConnection();
   let queryString =
     "INSERT INTO turni_anagrafica (" +
     "denominazione, " +
     "codice," + 
-    "plesso_fk) VALUES (" +
+    "ordinescuola_fk) VALUES (" +
     "'" +
     newItem.denominazione +
     "','" +
     newItem.codice +
     "', " +
-    newItem.plesso_fk +
+    newItem.ordinescuola_fk +
     ")";
   conn
     .query(queryString)
@@ -106,14 +104,14 @@ Turni.create = async function (newItem, result) {
     });
 };
 
-let sqlUpdate = "UPDATE turni_anagrafica SET denominazione = ?, codice = ?, plesso_fk = ? WHERE turno_pk = ?"
+let sqlUpdate = "UPDATE turni_anagrafica SET denominazione = ?, codice = ?, ordinescuola_fk = ? WHERE turno_pk = ?"
 
 Turni.update = async function (id, item, result) {
 
   let conn;
   conn = await pool.getConnection();
   conn.query(sqlUpdate,
-      [item.denominazione, item.codice, item.plesso_fk, id]
+      [item.denominazione, item.codice, item.ordinescuola_fk, id]
     )
     .then(
       (value) => {

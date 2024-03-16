@@ -14,16 +14,22 @@ var Menu = function (menu) {
   this.venerdi = menu.venerdi;  
   this.sabato = menu.sabato;  
   this.domenica = menu.domenica;  
-  this.cliente_fk = menu.cliente_fk;
   this.menu_fk = menu.menu_fk;
   this.nota = menu.nota;
 };
+
+let sqlFindAll = "SELECT menu_anagrafica.*, " +
+"menu_padre.menu_code AS menupadre_codice, " + 
+"menu_padre.denominazione AS menupadre_denominazione " + 
+"FROM menu_anagrafica " + 
+"LEFT JOIN menu_anagrafica AS menu_padre " +
+"ON menu_anagrafica.menu_fk = menu_padre.menu_pk ";
 
 Menu.findAll = async function (result) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const [rows,fields] = await conn.query("SELECT menu_anagrafica.* FROM menu_anagrafica ");
+    const [rows,fields] = await conn.query(sqlFindAll);
 
     console.log('rows',rows);
     result(null, rows);
@@ -53,7 +59,6 @@ Menu.create = async function (newItem, result) {
     "venerdi, " +
     "sabato, " +
     "domenica, " +
-    "cliente_fk, " +
     "menu_fk, " +
     "nota) VALUES ('" +
     newItem.menu_code +
@@ -76,8 +81,6 @@ Menu.create = async function (newItem, result) {
     "', '" +
     newItem.domenica +
     "', " +
-    newItem.cliente_fk +
-    ", " +
     newItem.menu_fk +
     ", '" +
     (newItem.nota == null ? "" : newItem.nota) +
@@ -127,10 +130,9 @@ Menu.update = async function (id, item, result) {
       "UPDATE menu_anagrafica SET "+
       "menu_code=?, denominazione=? , periodo=?, " + 
       "lunedi=?, martedi=?, mercoledi=?, giovedi=?, venerdi=?, sabato=?, domenica=? " +
-      " cliente_fk=?, menu_fk=?, nota=? WHERE menu_pk=?",
+      " menu_fk=?, nota=? WHERE menu_pk=?",
       [item.menu_code, item.denominazione, item.periodo,
-        item.lunedi, item.martedi, item.mercoledi, item.giovedi, item.venerdi, item.sabato, item.domenica,
-        item.cliente_fk, item.nota, id]
+        item.lunedi, item.martedi, item.mercoledi, item.giovedi, item.venerdi, item.sabato, item.domenica, item.nota, id]
     )
     .then(
       (value) => {

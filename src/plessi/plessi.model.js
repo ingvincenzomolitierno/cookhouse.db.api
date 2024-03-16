@@ -6,16 +6,13 @@ var Plessi = function (plessi) {
   this.plesso_pk = plessi.plesso_pk;
   this.denominazione = plessi.denominazione;
   this.codice = plessi.codice;
-  this.ordinescuola_fk = plessi.ordinescuola_fk;
+  this.scuola_fk = plessi.scuola_fk;
 };
 
 let sqlFindAll = "SELECT " +
 "plessi_anagrafica.plesso_pk, " +
 "plessi_anagrafica.denominazione AS plesso_denominazione, " +
 "plessi_anagrafica.codice AS plesso_codice, " +
-"ordinescuola_anagrafica.ordinescuola_pk, " +
-"ordinescuola_anagrafica.denominazione AS ordinescuola_denominazione, " +
-"ordinescuola_anagrafica.codice AS ordinescuola_codice, " +
 "scuole_anagrafica.scuola_pk, " +
 "scuole_anagrafica.denominazione AS scuola_denominazione, " +
 "scuole_anagrafica.codice AS scuola_codice, " +
@@ -23,8 +20,7 @@ let sqlFindAll = "SELECT " +
 "clienti_anagrafica.denominazione AS cliente_denominazione, " +
 "clienti_anagrafica.codice AS cliente_codice " +
 "FROM plessi_anagrafica " +
-"LEFT JOIN ordinescuola_anagrafica ON plessi_anagrafica.ordinescuola_fk = ordinescuola_anagrafica.ordinescuola_pk " +
-"LEFT JOIN scuole_anagrafica ON ordinescuola_anagrafica.scuola_fk = scuole_anagrafica.scuola_pk " +
+"LEFT JOIN scuole_anagrafica ON plessi_anagrafica.scuola_fk = scuole_anagrafica.scuola_pk " +
 "LEFT JOIN clienti_anagrafica ON scuole_anagrafica.cliente_fk = clienti_anagrafica.cliente_pk ";
 
 Plessi.findAll = async function (result) {
@@ -32,7 +28,6 @@ Plessi.findAll = async function (result) {
   try {
     conn = await pool.getConnection();
     const [rows,fields] = await conn.query(sqlFindAll);
-    console.log(rows);
     result(null, rows);
   } catch (err) {
     throw err;
@@ -54,18 +49,18 @@ Plessi.findById = async function (id, result) {
   }
 };
 
-Plessi.findByOrdineId = async function (id, result) {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const [rows,fields] = await conn.query(sqlFindAll + " WHERE ordinescuola_anagrafica.ordinescuola_pk = " + id);
-    result(null, rows);
-  } catch (err) {
-    throw err;
-  } finally {
-    if (conn) return conn.release();
-  }
-};
+// Plessi.findByOrdineId = async function (id, result) {
+//   let conn;
+//   try {
+//     conn = await pool.getConnection();
+//     const [rows,fields] = await conn.query(sqlFindAll + " WHERE ordinescuola_anagrafica.ordinescuola_pk = " + id);
+//     result(null, rows);
+//   } catch (err) {
+//     throw err;
+//   } finally {
+//     if (conn) return conn.release();
+//   }
+// };
 
 Plessi.create = async function (newItem, result) {
   let conn;
@@ -74,14 +69,15 @@ Plessi.create = async function (newItem, result) {
     "INSERT INTO plessi_anagrafica (" +
     "denominazione, " +
     "codice," + 
-    "ordinescuola_fk) VALUES (" +
+    "scuola_fk) VALUES (" +
     "'" +
     newItem.denominazione +
     "','" +
     newItem.codice +
     "', " +
-    newItem.ordinescuola_fk +
+    newItem.scuola_fk +
     ")";
+
   conn
     .query(queryString)
     .then(
@@ -101,14 +97,14 @@ Plessi.create = async function (newItem, result) {
     });
 };
 
-let sqlUpdate = "UPDATE plessi_anagrafica SET denominazione = ?, codice = ?, ordinescuola_fk = ? WHERE plesso_pk = ?"
+let sqlUpdate = "UPDATE plessi_anagrafica SET denominazione = ?, codice = ?, scuola_fk = ? WHERE plesso_pk = ?"
 
 Plessi.update = async function (id, item, result) {
 
   let conn;
   conn = await pool.getConnection();
   conn.query(sqlUpdate,
-      [item.denominazione, item.codice, item.cliente_fk, id]
+      [item.denominazione, item.codice, item.scuola_fk, id]
     )
     .then(
       (value) => {

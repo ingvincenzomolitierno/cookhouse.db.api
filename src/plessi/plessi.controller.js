@@ -3,17 +3,17 @@
 const Plessi = require("./plessi.model.js");
 
 exports.findAll = function (req, res) {
-  if(req.query.hasOwnProperty("ordinescuola")){
-    Plessi.findByOrdineId(req.query.ordinescuola,function (err, plessi) {
-      if (err) res.send(err);
-      res.send(plessi);
-    });
-  } else {
+  // if(req.query.hasOwnProperty("ordinescuola")){
+  //   Plessi.findByOrdineId(req.query.ordinescuola,function (err, plessi) {
+  //     if (err) res.send(err);
+  //     res.send(plessi);
+  //   });
+  // } else {
     Plessi.findAll(function (err, plessi) {
       if (err) res.send(err);
       res.send(plessi);
     });
-  }
+  // }
 };
 
 exports.findById = function(req, res) {

@@ -8,6 +8,7 @@ app.use(cors());
 
 // Setup server port
 const port = process.env.PORT || 5000;
+const portHttp = 4000;
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -19,7 +20,7 @@ app.get('/', (req, res) => {
   res.send("Hello World");
 });
 
-// Require materie prime routes
+// import routes modules
 const materiePrimeRoutes = require('./src/materieprime/materie-prime.routes');
 const tipoPortateRoutes = require('./src/tipoportate/tipoportate.routes');
 const versionePortateRoutes = require('./src/versioneportate/versioneportate.routes');
@@ -29,6 +30,7 @@ const optionsRoutes = require('./src/options/options.routes');
 
 const menuRoutes = require('./src/menu/menu.routes');
 const menuStrutturaRoutes = require('./src/menustruttura/menu-struttura.routes');
+const fornitureRoutes = require('./src/forniture/forniture.routes');
 
 const clientiRoutes = require('./src/clienti/clienti.routes');
 const scuoleRoutes = require('./src/scuole/scuole.routes');
@@ -45,6 +47,7 @@ app.use('/api/v1/versioneportate', versionePortateRoutes);
 app.use('/api/v1/portate', portateRoutes);
 app.use('/api/v1/menu', menuRoutes);
 app.use('/api/v1/menustruttura', menuStrutturaRoutes);
+app.use('/api/v1/forniture', fornitureRoutes);
 
 
 app.use('/api/v1/clienti', clientiRoutes);
@@ -53,7 +56,25 @@ app.use('/api/v1/ordinescuola', ordinescuolaRoutes);
 app.use('/api/v1/plessi', plessiRoutes);
 app.use('/api/v1/turni', turniRoutes);
 
-// listen for requests
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+// // listen for requests
+// app.listen(port, () => {
+//   console.log(`Server is listening on port ${port}`);
+// });
+
+
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+
+const keys = {
+  key: fs.readFileSync('./cert/cookhouse.api.key'),
+  cert: fs.readFileSync('./cert/cookhouse.api.crt')
+};
+
+http.createServer(app).listen(portHttp, ()=>{
+  console.log(`Http Server is listening on port ${portHttp}`);
 });
+
+https.createServer(keys,app).listen(port, ()=>{
+    console.log(`Https Server is listening on port ${port}`);
+  });

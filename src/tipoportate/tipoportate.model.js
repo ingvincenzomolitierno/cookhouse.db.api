@@ -16,6 +16,7 @@ TipoPortata.findAll = async function (result) {
   try {
     conn = await pool.getConnection();
     const [rows,fields] = await conn.query(sqlFindAll);
+    console.log('tipo portate',rows)
     result(null, rows);
   } catch (err) {
     throw err;

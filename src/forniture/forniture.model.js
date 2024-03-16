@@ -13,6 +13,8 @@ var Forniture = function (forniture) {
 
   this.turno_fk = forniture.turno_fk;
   this.menu_fk = forniture.menu_fk;
+
+  this.valore_default = forniture.valore_default;
 };
 
 let sqlFindAll = "SELECT " + 
@@ -22,24 +24,31 @@ let sqlFindAll = "SELECT " +
 "forniture_cross.descrizione AS fornitura_descrizione, " +
 "forniture_cross.data_inizio, " +
 "forniture_cross.data_fine, " +
+"forniture_cross.valore_default, " +
 
+"turni_anagrafica.turno_pk AS turno_fk, " +
 "turni_anagrafica.denominazione AS turno_denominazione, " +
 "turni_anagrafica.codice AS turno_codice, " +
 
-"plessi_anagrafica.denominazione AS plessi_denominazione, " +
-"plessi_anagrafica.codice AS plessi_codice, " +
+"plessi_anagrafica.plesso_pk, " +
+"plessi_anagrafica.denominazione AS plesso_denominazione, " +
+"plessi_anagrafica.codice AS plesso_codice, " +
 
+"ordinescuola_anagrafica.ordinescuola_pk, " +
 "ordinescuola_anagrafica.denominazione AS ordinescuola_denominazione, " +
 "ordinescuola_anagrafica.codice AS ordinescuola_codice, " +
 
-"scuole_anagrafica.denominazione AS scuole_denominazione, " +
-"scuole_anagrafica.codice AS scuole_codice, " +
+"scuole_anagrafica.scuola_pk, " +
+"scuole_anagrafica.denominazione AS scuola_denominazione, " +
+"scuole_anagrafica.codice AS scuola_codice, " +
 
 "clienti_anagrafica.cliente_pk, " +
 "clienti_anagrafica.denominazione AS cliente_denominazione, " +
 "clienti_anagrafica.codice AS cliente_codice, " +
 
-"menu_anagrafica.menu_pk " +
+"menu_anagrafica.menu_pk AS menu_fk, " +
+"menu_anagrafica.menu_code AS menu_codice, " +
+"menu_anagrafica.denominazione AS menu_denominazione " +
 
 "FROM forniture_cross " +
 "LEFT JOIN turni_anagrafica ON forniture_cross.turno_fk = turni_anagrafica.turno_pk " +
@@ -89,21 +98,38 @@ Forniture.findByMenuId = async function (id, result) {
   }
 };
 
-Forniture.create = async function (newItem, result) {
+Forniture.create = async function (newItem, result) {  
   let conn;
+  console.log(newItem);
   conn = await pool.getConnection();
   let queryString =
-    "INSERT INTO plessi_anagrafica (" +
+    "INSERT INTO forniture_cross (" +
+    "codice, " +
     "denominazione, " +
-    "codice," + 
-    "ordinescuola_fk) VALUES (" +
+    "descrizione, " +
+    "data_inizio," + 
+    "data_fine," + 
+    "valore_default," + 
+    "turno_fk," + 
+    "menu_fk) VALUES (" +
     "'" +
+    newItem.codice +
+    "','" +
     newItem.denominazione +
     "','" +
-    newItem.codice +
-    "', " +
-    newItem.ordinescuola_fk +
+    newItem.descrizione +
+    "','" +    
+    newItem.data_inizio +
+    "','" +  
+    newItem.data_fine +
+    "', " +  
+    newItem.valore_default +
+    ", " +      
+    newItem.turno_fk +
+    ", " +      
+    newItem.menu_fk +
     ")";
+    console.log(queryString);
   conn
     .query(queryString)
     .then(
@@ -123,14 +149,15 @@ Forniture.create = async function (newItem, result) {
     });
 };
 
-let sqlUpdate = "UPDATE plessi_anagrafica SET denominazione = ?, codice = ?, ordinescuola_fk = ? WHERE plesso_pk = ?"
+let sqlUpdate = "UPDATE forniture_cross SET codice = ?, denominazione = ?, descrizione = ?, data_inizio = ?, data_fine = ?, valore_default = ?, turno_fk = ?, menu_fk = ? WHERE fornitura_pk = ?"
 
 Forniture.update = async function (id, item, result) {
-
+  console.log('#######################################');
+  console.log('item',item);
   let conn;
   conn = await pool.getConnection();
   conn.query(sqlUpdate,
-      [item.denominazione, item.codice, item.cliente_fk, id]
+      [item.codice, item.denominazione, item.descrizione, item.data_inizio, item.data_fine, item.valore_default, item.turno_fk, item.menu_fk, id]
     )
     .then(
       (value) => {
@@ -153,7 +180,7 @@ Forniture.delete = async function (id, result) {
   let conn;
   conn = await pool.getConnection();
   conn
-    .query("DELETE FROM plessi_anagrafica WHERE plesso_pk = ?",id)
+    .query("DELETE FROM forniture_cross WHERE fornitura_pk = ?",id)
     .then((value) => {
       result(null, value);
     })
