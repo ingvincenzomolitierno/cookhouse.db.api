@@ -60,7 +60,7 @@ Scuole.findByClienteId = async function (cliente_pk, result) {
 };
 
 Scuole.create = async function (newItem, result) {
-  console.log(newItem);
+  
   let conn;
   conn = await pool.getConnection();
   let queryString = "INSERT INTO scuole_anagrafica (" +
@@ -98,10 +98,6 @@ let sqlUpdate = "UPDATE scuole_anagrafica SET denominazione = ?, codice = ?, cli
 
 Scuole.update = async function (id, item, result) {
 
-  console.log('id', id);
-  console.log('item', item);
-  console.log('result', result);
-
   let conn;
   conn = await pool.getConnection();
   conn.query(sqlUpdate,
@@ -126,7 +122,6 @@ Scuole.update = async function (id, item, result) {
 
 Scuole.delete = async function (id, result) {
   let conn;
-  console.log('id',id);
   conn = await pool.getConnection();
   conn
     .query("DELETE FROM scuole_anagrafica WHERE scuola_pk = ?",id)

@@ -5,11 +5,11 @@ const menuController = require('./menu.controller.js');
 // Retrieve all 'items'
 router.get('/', menuController.findAll);
 
+// Retrieve a single 'item' with id
+router.get('/:id', menuController.findById);
+
 // // Create a new 'items'
 router.post('/', menuController.create);
-
-// // Retrieve a single 'item' with id
-// router.get('/:id', menuController.findById);
 
 // // Update a 'item' with id
 router.put('/:id', menuController.update);

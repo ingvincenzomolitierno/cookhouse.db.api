@@ -3,10 +3,17 @@
 const Menu = require("./menu.model.js");
 
 exports.findAll = function (req, res) {
-  Menu.findAll(function (err, menu) {
-    if (err) res.send(err);
-    res.send(menu);
-  });
+  if(req.query.hasOwnProperty("menupadre")){
+    Menu.findFatherMenu(req.query.menupadre, function (err, menu) {
+      if (err) res.send(err);
+      res.send(menu);
+    });
+  } else {
+    Menu.findAll(function (err, menu) {
+      if (err) res.send(err);
+      res.send(menu);
+    });
+  }
 };
 
 exports.create = function (req, res) {
@@ -31,13 +38,13 @@ exports.create = function (req, res) {
   }
 };
 
-// exports.findById = function(req, res) {
-//     Employee.findById(req.params.id, function(err, employee) {
-//         if (err)
-//         res.send(err);
-//         res.json(employee);
-//     });
-// };
+exports.findById = function(req, res) {
+  Menu.findById(req.params.id, function(err, menu) {
+        if (err)
+        res.send(err);
+        res.json(menu);
+    });
+};
 
 exports.update = function (req, res) {
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {

@@ -8,12 +8,23 @@
 //   database: 'conigliodoro'
 // });
 
+// var mysql = require('mysql2/promise');
+
+// const pool = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "Ing@2023",
+//   connectionLimit: 5,
+//   database: 'conigliodoro',
+//   port: 3306,
+// });
+
 var mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
   host: "localhost",
-  user: "root",
-  password: "Ing@2023",
+  user: "conigliodoro",
+  password: "ConiglioDoro@2024",
   connectionLimit: 5,
   database: 'conigliodoro',
   port: 3306,

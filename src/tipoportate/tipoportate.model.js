@@ -7,6 +7,7 @@ var TipoPortata = function (tipoportata) {
   this.portata_tipo_code = tipoportata.portata_tipo_code;
   this.denominazione = tipoportata.denominazione;
   this.descrizione = tipoportata.descrizione;
+  this.ordinale = tipoportata.ordinale;
 };
 
 let sqlFindAll = "SELECT * FROM portate_tipo_anagrafica ";
@@ -16,7 +17,6 @@ TipoPortata.findAll = async function (result) {
   try {
     conn = await pool.getConnection();
     const [rows,fields] = await conn.query(sqlFindAll);
-    console.log('tipo portate',rows)
     result(null, rows);
   } catch (err) {
     throw err;

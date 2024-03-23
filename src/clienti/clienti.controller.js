@@ -5,9 +5,6 @@ const Clienti = require("./clienti.model.js");
 exports.findAll = function (req, res) {
   Clienti.findAll(function (err, clienti) {
     if (err) res.send(err);
-
-    console.log(clienti);
-
     res.send(clienti);
   });
 };
@@ -44,9 +41,6 @@ exports.create = function (req, res) {
 };
 
 exports.update = function (req, res) {
-
-  console.log(req.body);
-
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
     res
       .status(400)

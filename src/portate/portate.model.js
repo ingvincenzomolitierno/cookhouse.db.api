@@ -8,17 +8,29 @@ var Portate = function (portata) {
   this.denominazione = portata.denominazione;
   this.descrizione = portata.descrizione;
   this.alias = portata.alias;
+  
   this.tipo_portata_fk = portata.tipo_portata_fk;
+  this.portata_tipo_codice = portata.portata_tipo_codice;
+  this.portata_tipo_denominazione = portata.portata_tipo_denominazione;
   this.versione_portata_fk = portata.versione_portata_fk;
 };
 
-let sqlFindAll = "SELECT portate_anagrafica.*, " + 
-"portate_tipo_anagrafica.portata_tipo_code as portata_tipo_codice, " +
-"portate_tipo_anagrafica.denominazione as portata_tipo_denominazione, " +
-"portate_versione_anagrafica.denominazione  as portata_versione " +
-"FROM portate_anagrafica " +
-"LEFT JOIN portate_tipo_anagrafica ON portate_anagrafica.tipo_portata_fk = portate_tipo_anagrafica.portata_tipo_pk " +
-"LEFT JOIN portate_versione_anagrafica ON portate_anagrafica.versione_portata_fk = portate_versione_anagrafica.portata_versione_pk ";
+let sqlFindAll = "SELECT portate_anagrafica.portata_pk, " +
+"portate_anagrafica.portata_code AS portata_codice, " +
+"portate_anagrafica.denominazione AS portata_denominazione, " +
+"portate_anagrafica.descrizione AS portata_descrizione, " +
+"portate_anagrafica.alias AS portata_alias, " +
+
+"portate_tipo_anagrafica.portata_tipo_pk AS portata_tipo_pk, " +   
+"portate_tipo_anagrafica.portata_tipo_code AS portata_tipo_codice, " + 
+"portate_tipo_anagrafica.denominazione AS portata_tipo_denominazione, " + 
+
+"portate_versione_anagrafica.portata_versione_pk AS portata_versione_pk, " + 
+"portate_versione_anagrafica.portata_versione_code AS portata_versione_codice, " + 
+"portate_versione_anagrafica.denominazione  AS portata_versione_denominazione " + 
+"FROM portate_anagrafica " + 
+"LEFT JOIN portate_tipo_anagrafica ON portate_anagrafica.tipo_portata_fk = portate_tipo_anagrafica.portata_tipo_pk " + 
+"LEFT JOIN portate_versione_anagrafica ON portate_anagrafica.versione_portata_fk = portate_versione_anagrafica.portata_versione_pk  ";
 
 Portate.findAll = async function (result) {
   let conn;
@@ -65,8 +77,6 @@ Portate.create = async function (newItem, result) {
 
   conn = await pool.getConnection();
 
-  console.log('newItem',newItem);
-
   let queryString =
     "INSERT INTO portate_anagrafica (" +
     "portata_code, " +
@@ -87,8 +97,6 @@ Portate.create = async function (newItem, result) {
     ", " +
     newItem.versione_portata_fk +
     ")";
-
-    console.log('query', queryString);
 
   conn
     .query(queryString)

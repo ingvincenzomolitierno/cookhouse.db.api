@@ -91,8 +91,6 @@ let sqlUpdate = "UPDATE clienti_anagrafica SET codice = ?, denominazione = ?, no
 
 Clienti.update = async function (id, item, result) {
 
-  console.log(item);
-
   let conn;
   conn = await pool.getConnection();
   conn.query(sqlUpdate,

@@ -17,7 +17,6 @@ exports.findById = function (req, res) {
 };
 
 exports.findByTypeCode = function (req, res) {
-  console.log(req.params);
   Portate.findByTypeCode(req.params.typecode, function (err, employee) {
     if (err) res.send(err);
     res.json(employee);
